@@ -1,9 +1,5 @@
-from app import funcs
 from app.modules import anonymizer_n_privacy as anp
 from app.modules import open_ai_provaider as oaip
-from app.config import Settings
-
-from .test_back_pipeline import read_test_files, create_test_request, make_test_client
 
 def test_sanitize_text_removes_html_entities_control_chars_and_extra_spaces():
     raw_text = "<p>Senior&nbsp;Java\u200b Developer</p>\x00<br>  Kafka   Spring"

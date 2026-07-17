@@ -147,7 +147,7 @@ def test_check_match_accepts_frontend_payload_and_returns_match_result(monkeypat
             "openai_model": "gpt-5-mini",
         },
     )
- 
+
     assert response.status_code == 200
     assert len(provider_calls) == 1
     assert response.json() == {

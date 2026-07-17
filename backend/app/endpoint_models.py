@@ -45,7 +45,7 @@ class AutoVacancyResult(BaseModel):
     missing_or_unclear_requirements: list = []
     red_flags: list = []
     score_breakdown: ScoreBreakdown
- 
+
 class AutoVacancyResponse(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -60,7 +60,7 @@ class AutoVacancyMoreRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     vacancy_limit: Literal[3, 5] = 3
-    
+
 class RedFlagResult(BaseModel):
     model_config = ConfigDict(extra="forbid")
 

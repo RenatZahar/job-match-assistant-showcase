@@ -45,7 +45,7 @@ class Settings(BaseSettings):
         env_file=ENV_FILE,
         env_file_encoding="utf-8",
         extra="ignore",
-    
+
     )
 
 # @lru_cache

@@ -129,18 +129,18 @@ def build_user_input(**kwargs):
 
 
 def get_settings_llm_validation(request):
-    
+
     settings = get_settings()
     client = get_openai_client()
     user_input = build_user_input(
-        career_strategy=request.career_strategy, 
-        red_flags=request.red_flags, 
-        resume=request.resume, 
+        career_strategy=request.career_strategy,
+        red_flags=request.red_flags,
+        resume=request.resume,
         lang=request.lang)
-    
+
     answer = client.responses.create(
         model=settings.openai_model,
-        reasoning={"effort": settings.openai_reasoning_effort}, 
+        reasoning={"effort": settings.openai_reasoning_effort},
         store=settings.openai_store_responses, #разобраться как работает кэш и можно ли его тут использовать
         instructions=BRIGHT_DATA_LLM_VALIDATION_INSTRUCTION,
         input=user_input,
@@ -156,19 +156,12 @@ def get_settings_llm_validation(request):
                 },
             },
         )
-    
+
     return answer
 
 
-    
-def send_many_vacancies(request, vacancies):
-    career_strategy = request.career_strategy
-    red_flags = request.red_flags
-    resume = request.resume
-    lang = request.lang
-    cv_evaluation_promt = "template"
-    openai_model = request.openai_model
 
+def send_many_vacancies(request, vacancies):
     def send_one(vacancy):
         return send_data_to_oai_provider_for_match_request(
             career_strategy=request.career_strategy,

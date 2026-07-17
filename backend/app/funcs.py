@@ -1,5 +1,4 @@
 from io import BytesIO
-import json
 
 from types import SimpleNamespace
 from zipfile import BadZipFile
@@ -156,7 +155,7 @@ def load_more_auto_vacancies(search_id, username, vacancy_limit=3):
 
 
 def start_match_pipeline(request):
-    
+
     prompt = choose_prompt(request.prompt_mode, request.manual_prompt)
     resume = anp.clean_data_for_sensitive_n_safety(request.resume, sensitive=True)
     vacancy = anp.clean_data_for_sensitive_n_safety(request.vacancy, sensitive=False)
@@ -166,9 +165,9 @@ def start_match_pipeline(request):
             request.career_strategy, request.red_flags, resume, vacancy, request.lang, prompt, request.openai_model
         )
         answer = oaip.serialize_answer(raw_answer)
-    
+
     else:
-        raise HTTPException(status_code=422, detail=f"uncorrect provaider argument (error 422?)")
+        raise HTTPException(status_code=422, detail="uncorrect provaider argument (error 422?)")
 
     return answer, raw_answer
 

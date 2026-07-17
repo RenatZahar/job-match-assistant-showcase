@@ -1,4 +1,3 @@
-from collections.abc import Callable
 import secrets
 
 from fastapi import Depends, HTTPException, status
@@ -8,8 +7,8 @@ from .config import Settings
 
 
 security = HTTPBasic(auto_error=False)
- 
-# сейчас авторизация и ее проверка фактически отключена. проверка происходит при заходе на адресс. и вообще все это нахер - надо делать через sql 
+
+# сейчас авторизация и ее проверка фактически отключена. проверка происходит при заходе на адресс. и вообще все это нахер - надо делать через sql
 def build_basic_auth_dependency(settings: Settings) :
     users = parse_basic_auth_users(settings.basic_auth_users)
 

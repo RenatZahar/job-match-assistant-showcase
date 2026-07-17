@@ -1,33 +1,30 @@
-# Cloudflare Pages Settings
+# Cloudflare Pages configuration
 
-## Project
+Use Git integration and select this repository.
 
-- Framework preset: Vite
-- Root directory: `frontend`
-- Build command: `npm run build`
-- Build output directory: `dist`
-- Production branch: `main`
+| Setting                | Value           |
+| ---------------------- | --------------- |
+| Framework preset       | React (Vite)    |
+| Production branch      | `main`          |
+| Root directory         | `frontend`      |
+| Build command          | `npm run build` |
+| Build output directory | `dist`          |
 
-## Environment Variables
+Production environment variables:
 
-Production:
+```text
+NODE_VERSION=22
+VITE_API_BASE_URL=https://<your-render-service>.onrender.com
+VITE_MATCH_API_MODE=api
+```
 
-- `VITE_API_BASE_URL=https://api.example.com`
-- `VITE_MATCH_API_MODE=api`
+Use `VITE_MATCH_API_MODE=mock` for a no-cost public UI demo. Vite variables are embedded at build time, so deploy again after changing them.
 
-Development:
+After Pages assigns the production URL, update the backend values in Render:
 
-- `VITE_API_BASE_URL=https://api-dev.example.com`
-- `VITE_MATCH_API_MODE=api`
+```text
+CORS_ORIGINS=https://<your-project>.pages.dev
+FRONTEND_BASE_URL=https://<your-project>.pages.dev
+```
 
-Local frontend development can keep `VITE_MATCH_API_MODE=mock` for match calculation, but feedback,
-app logs, and `test_data` use the backend API configured by `VITE_API_BASE_URL`.
-
-Replace `example.com` with the selected project domain during setup.
-
-## Custom Domains
-
-- Production frontend: `app.example.com`
-- Development frontend: `dev.example.com`
-
-Use Cloudflare dashboard generated DNS instructions for exact records.
+Preview deployments need their own allowed origin if they call the backend directly. Do not use `*` together with browser credentials.

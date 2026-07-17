@@ -1,0 +1,17 @@
+.git
+.github
+.venv
+**/__pycache__
+**/*.pyc
+**/.pytest_cache
+**/.ruff_cache
+frontend/node_modules
+frontend/dist
+.env
+**/.env.local
+feedback_data
+app_logs
+test_data
+old_data
+docs/public-exports
+*.log

@@ -1,8 +1,6 @@
 import requests
-import json
-import time 
-from pathlib import Path
-from typing import Literal, Any
+import time
+from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field
 from app.config import get_settings
 
@@ -72,18 +70,17 @@ def _extract_bright_data_vacancies(response):
 def get_snapshot(snapshot_id, settings):
     headers = {
         "Authorization": f"Bearer {settings.bright_data_api_key}",
-        "Content-Type": "application/json"}\
-        
+        "Content-Type": "application/json"}
     response = requests.get(
         f"{settings.bright_data_api_base}/snapshot/{snapshot_id}",
             headers=headers,
             params={"format": "json"},
             timeout=30)
-    
+
     vacancies = response.json()
     vacancies = _extract_bright_data_vacancies(vacancies)
     return vacancies
-    
+
 
 def check_brightdata_snapshot(request, settings):
     data = request.json()
@@ -124,7 +121,7 @@ def send_search_requst(search_vacancy_settings, request, settings, old_vacs_in_p
                 "jobs_to_not_include": jobs_to_not_include,
                 "location_radius": search_vacancy_settings.location_radius,
             }
-        ]    
+        ]
 
     response = requests.post(
         settings.bright_data_api_search+f"&limit_per_input={request.vacancy_limit}",
@@ -161,7 +158,7 @@ def filtration_to_str(vacancies):
         cleared_vacancies.append(cleared_vacancy)
 
     return cleared_vacancies
-    
+
 
 
 def vacancy_search_by_key(search_vacancy_settings, request, old_vacs_in_project=None):

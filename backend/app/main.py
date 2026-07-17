@@ -51,7 +51,7 @@ async def parse_check_match_form(request: Request):
         return data
     except ValidationError as error:
         raise HTTPException(status_code=422, detail=error.errors()) from error
-    
+
 async def parse_autovacancy_form(request: Request):
     form = await request.form()
     resume = await get_value(form, "resume_text", "resume_file", "resume")
@@ -74,7 +74,7 @@ async def parse_autovacancy_form(request: Request):
     except ValidationError as error:
         raise HTTPException(status_code=422, detail=error.errors()) from error
 
-    
+
 async def get_value(form, text_key: str, file_key: str, field_name: str) -> str:
     text = form.get(text_key)
     file = form.get(file_key)
@@ -197,11 +197,11 @@ def create_app(settings: Settings | None = None):
     # пример минимального ендпоинт. но без авторизации
     # @api.post("/check_match")
     # async def main_scenario_entrypoint(request: CheckMatchRequest):
-    #нужен ли response_model=CheckMatchResponse? мы все равно валидируем ответ в конце    
+    #нужен ли response_model=CheckMatchResponse? мы все равно валидируем ответ в конце
     @api.post("/check_match", response_model=CheckMatchResponse, dependencies=[Depends(require_auth)])
     async def main_scenario_entrypoint(request = Depends(parse_check_match_form)) -> CheckMatchResponse:
 
-        #добавить в инпуты ссылку?                       
+        #добавить в инпуты ссылку?
 
         try:
             request = CheckMatchRequest.model_validate(request)
@@ -238,7 +238,7 @@ def create_app(settings: Settings | None = None):
         """List saved auto vacancy search sessions for the authenticated account."""
         return avdb.get_auto_vacancy_project_names(username)
 
-    
+
     @api.post("/auto_vacancy_searches", status_code=201)
     async def create_auto_vacancy_search_project_entrypoint(request: Request, username: str = Depends(require_auth)) -> dict[str, object]:
         """Create a named auto vacancy search session and return its first matched vacancies."""
@@ -263,7 +263,7 @@ def create_app(settings: Settings | None = None):
         # и - логи отправки в брайт апи чтобы копить ошибки и плохие значения ключей в запросах
         # логи надо делать в бд
         # переелать save_openai_debug (и поискать похожие функции) на запись в дб
-        
+
         # сначала наДо искать вакансии по selective_search True,  но как только не нахоДится До лимита - переклЮчаться на FaLse
 
         # вставить защиту от появления дублей вакансий в дб в серч-проекте (с заменой новых данных?)
@@ -277,16 +277,16 @@ def create_app(settings: Settings | None = None):
             "negative_preferences": search_vacancy_settings.get("negative_preferences", []),
             }
         avdb.save_search_plan_llm_meta(search_vacancy_settings, llm_problems_to_research, request.search_id, username)
-        
+
         search_vacancy_settings = bdp.BrightDataModel.model_validate(search_vacancy_settings)
         old_vacs_in_project = avdb.get_bright_data_vac_ids_in_search_project(request.search_id, username)
         # дописать - если BrightData не может вернуть вакансии - переключать на selective_search false
         all_oai_results, all_vacancies = funcs.run_auto_vacancy_matching_batches(request, search_vacancy_settings, username, old_vacs_in_project)
 
         auto_vacancy_response = funcs.build_auto_vacancy_response(request, all_oai_results, all_vacancies)
-        
+
         return AutoVacancyResponse.model_validate(auto_vacancy_response)
-    
+
 
     return api
 
