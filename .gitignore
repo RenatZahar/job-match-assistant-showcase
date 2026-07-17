@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.venv/
+venv/
+*.egg-info/
+debug/
+backend/debug/
+feedback_data/
+app_logs/
+test_data/
+test_data_cases/
+
+# Node
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+*.log
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Local worktrees
+.worktrees/
+worktrees/
+
+# Archived or noisy source material kept locally
+old_data/
+docs/public-exports/
+test.ipynb
