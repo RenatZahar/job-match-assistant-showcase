@@ -33,6 +33,22 @@ Job descriptions are ambiguous, CVs contain sensitive data, and a single match s
 
 The default local setup uses deterministic frontend mock matching. It needs no API key and makes no paid provider calls. Real match evaluation is opt-in.
 
+## Product walkthrough
+
+The screenshots use anonymized data and show the experimental automatic-vacancy flow from saved searches to an explainable ranking.
+
+### Saved search projects
+
+![Saved automatic vacancy search projects](docs/screenshots/01-search-projects.png)
+
+### Search context and ranked results
+
+![Anonymized search context and ranked vacancy results](docs/screenshots/02-search-context-and-results.png)
+
+### Explainable vacancy assessment
+
+![Matched and missing requirements for a selected vacancy](docs/screenshots/03-ranked-match-details.png)
+
 ## Architecture
 
 ```mermaid
@@ -185,3 +201,7 @@ render.yaml             Render Blueprint
 This is an AI-assisted portfolio project. I own the backend architecture, data contracts, validation, privacy pipeline, tests, evaluation logic, and deployment decisions. AI tools helped with review, frontend scaffolding, documentation, and boilerplate suggestions.
 
 The repository is a curated public showcase. Private test data, raw CVs, provider credentials, internal work logs, and research archives are intentionally excluded.
+
+## License
+
+This project is source-available under the [PolyForm Free Trial License 1.0.0](LICENSE). You may deploy and evaluate it for fewer than 32 consecutive calendar days. Redistribution and use outside that evaluation require separate permission from the copyright holder.
