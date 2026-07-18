@@ -56,6 +56,23 @@ COMPACT_GENDER_AGE_RE = re.compile(
 AGE_ONLY_LINE_RE = re.compile(
     rf"(?i)^\s*{AGE_NUMBER_PATTERN}\s*(?:{AGE_UNIT_EN_LABELED_PATTERN}|{AGE_UNIT_RU_PATTERN})\s*[,.]?\s*$"
 )
+HEADER_NAME_SEPARATOR_RE = re.compile(
+    r"^(?P<name>.+?)(?P<separator>\s*(?:[,;|•·–—]\s*|[-/]\s+))(?P<headline>.+)$"
+)
+ORGANIZATION_WORDS = {
+    "company",
+    "corp",
+    "corporation",
+    "gmbh",
+    "group",
+    "inc",
+    "labs",
+    "llc",
+    "solutions",
+    "studio",
+    "systems",
+    "technologies",
+}
 
 
 def clean_data_for_sensitive_n_safety(text, sensitive):
@@ -129,9 +146,18 @@ def replace_candidate_name(text: str) -> str:
             continue
         if looks_like_candidate_name(value):
             lines[index] = "[CANDIDATE_NAME]"
+        else:
+            lines[index] = replace_candidate_name_before_headline(value)
         break
 
     return "\n".join(lines)
+
+def replace_candidate_name_before_headline(value: str) -> str:
+    match = HEADER_NAME_SEPARATOR_RE.match(value)
+    if match is None or not looks_like_candidate_name(match.group("name").strip()):
+        return value
+
+    return f"[CANDIDATE_NAME]{match.group('separator')}{match.group('headline')}"
 
 def replace_labeled_private_line(text: str, kind: str, placeholder: str) -> str:
     labels = {
@@ -154,7 +180,7 @@ def looks_like_candidate_name(value: str) -> bool:
         return False
 
     lowered_words = {word.lower() for word in words}
-    if lowered_words & ROLE_WORDS:
+    if lowered_words & (ROLE_WORDS | ORGANIZATION_WORDS):
         return False
 
     return all(word[0].isupper() for word in words if word)

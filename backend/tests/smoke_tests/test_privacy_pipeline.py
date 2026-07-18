@@ -90,6 +90,43 @@ def test_candidate_name_heuristic_keeps_role_title():
     assert "[EMAIL]" in cleaned
 
 
+def test_candidate_name_heuristic_replaces_name_before_role_title():
+    raw_cv = "Alex Morgan, Senior iOS Developer / Team Lead\nSwift, UIKit, SwiftUI"
+
+    cleaned = anp.clean_data_for_sensitive_n_safety(raw_cv, sensitive=True)
+
+    assert "Alex Morgan" not in cleaned
+    assert cleaned.startswith("[CANDIDATE_NAME], Senior iOS Developer / Team Lead")
+    assert "Swift, UIKit, SwiftUI" in cleaned
+
+
+def test_candidate_name_heuristic_supports_common_header_separators():
+    headers = (
+        "Jane Doe | Product Manager",
+        "Jane Doe — Product Manager",
+        "Jane Doe / Product Manager",
+        "Jane Doe - Product Manager",
+    )
+
+    cleaned_headers = [anp.clean_data_for_sensitive_n_safety(header, sensitive=True) for header in headers]
+
+    assert all(header.startswith("[CANDIDATE_NAME]") for header in cleaned_headers)
+    assert all("Product Manager" in header for header in cleaned_headers)
+    assert all("Jane Doe" not in header for header in cleaned_headers)
+
+
+def test_candidate_name_heuristic_keeps_company_before_role_title():
+    headers = (
+        "Acme Corporation | Senior Java Developer",
+        "Example Systems — Product Manager",
+        "Example Technologies / Data Analyst",
+    )
+
+    cleaned_headers = [anp.clean_data_for_sensitive_n_safety(header, sensitive=True) for header in headers]
+
+    assert cleaned_headers == list(headers)
+
+
 def test_non_sensitive_data_is_sanitized_but_not_anonymized():
     cleaned = anp.clean_data_for_sensitive_n_safety("<b>Contact</b> test@example.com", sensitive=False)
 
