@@ -1,4 +1,5 @@
 import json
+import inspect
 
 from fastapi.testclient import TestClient
 
@@ -20,6 +21,24 @@ def test_health_returns_ok_status():
         "status": "ok",
         "environment": "test",
     }
+
+
+def test_blocking_product_routes_run_in_fastapi_threadpool():
+    app = create_app(Settings(app_env="test", database_url=None))
+    blocking_paths = {
+        "/feedback",
+        "/app_logs",
+        "/check_match",
+        "/auto_vacancy_searches",
+        "/auto_vacancy_searches/{search_id}",
+        "/auto_vacancy_searches/{search_id}/more",
+        "/auto_vacancy_matches",
+    }
+
+    endpoints = {route.path: route.endpoint for route in app.routes if route.path in blocking_paths}
+
+    assert endpoints.keys() == blocking_paths
+    assert all(not inspect.iscoroutinefunction(endpoint) for endpoint in endpoints.values())
 
 
 def test_health_db_reports_skipped_without_database_url():

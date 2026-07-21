@@ -7,6 +7,7 @@ from fastapi import HTTPException, UploadFile
 from pypdf import PdfReader
 from pypdf.errors import PdfReadError
 from docx.opc.exceptions import PackageNotFoundError
+from starlette.concurrency import run_in_threadpool
 
 from .modules.masks import CV_EVALUATION_PROMT_TEMPLATE
 from .modules import anonymizer_n_privacy as anp
@@ -198,10 +199,10 @@ async def extract_text_from_file(file: UploadFile) -> str:
     content = await file.read()
 
     if filename.endswith(".pdf"):
-        return extract_pdf_text(content)
+        return await run_in_threadpool(extract_pdf_text, content)
 
     if filename.endswith(".docx"):
-        return extract_docx_text(content)
+        return await run_in_threadpool(extract_docx_text, content)
 
     raise HTTPException(status_code=422, detail="Можно загружать только PDF или DOCX")
 

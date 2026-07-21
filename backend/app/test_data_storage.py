@@ -5,6 +5,7 @@ from typing import Any
 from fastapi import HTTPException, UploadFile
 from psycopg import connect
 from psycopg.types.json import Jsonb
+from starlette.concurrency import run_in_threadpool
 
 from . import funcs
 from .modules import anonymizer_n_privacy as anp
@@ -18,9 +19,9 @@ async def create_test_data_case(
     payload = await build_test_case_payload(form)
 
     if database_url:
-        case_name = save_test_case_to_database(payload, database_url)
+        case_name = await run_in_threadpool(save_test_case_to_database, payload, database_url)
     else:
-        case_name = save_test_case_to_file(payload, storage_root)
+        case_name = await run_in_threadpool(save_test_case_to_file, payload, storage_root)
 
     return test_case_summary(case_name, payload)
 
@@ -34,9 +35,9 @@ async def replace_test_data_case(
     payload = await build_test_case_payload(form)
 
     if database_url:
-        replace_test_case_in_database(case_name, payload, database_url)
+        await run_in_threadpool(replace_test_case_in_database, case_name, payload, database_url)
     else:
-        replace_test_case_file(case_name, payload, storage_root)
+        await run_in_threadpool(replace_test_case_file, case_name, payload, storage_root)
 
     return test_case_summary(case_name, payload)
 

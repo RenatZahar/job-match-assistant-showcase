@@ -124,7 +124,7 @@ def create_app(settings: Settings | None = None):
         return app_db.check_database(active_settings.database_url)
 
     @api.post("/feedback", status_code=201, dependencies=[Depends(require_auth)])
-    async def feedback_entrypoint(payload: dict) -> dict[str, str]:
+    def feedback_entrypoint(payload: dict) -> dict[str, str]:
         return save_feedback(
             payload,
             active_settings.feedback_storage_dir,
@@ -132,7 +132,7 @@ def create_app(settings: Settings | None = None):
         )
 
     @api.post("/app_logs", status_code=201, dependencies=[Depends(require_auth)])
-    async def app_logs_entrypoint(payload: dict) -> dict[str, str]:
+    def app_logs_entrypoint(payload: dict) -> dict[str, str]:
         return save_app_log(
             payload,
             active_settings.feedback_storage_dir,
@@ -199,7 +199,7 @@ def create_app(settings: Settings | None = None):
     # async def main_scenario_entrypoint(request: CheckMatchRequest):
     #нужен ли response_model=CheckMatchResponse? мы все равно валидируем ответ в конце
     @api.post("/check_match", response_model=CheckMatchResponse, dependencies=[Depends(require_auth)])
-    async def main_scenario_entrypoint(request = Depends(parse_check_match_form)) -> CheckMatchResponse:
+    def main_scenario_entrypoint(request = Depends(parse_check_match_form)) -> CheckMatchResponse:
 
         #добавить в инпуты ссылку?
 
@@ -227,32 +227,31 @@ def create_app(settings: Settings | None = None):
 
 
     @api.get("/auto_vacancy_searches/{search_id}")
-    async def get_auto_vacancy_search_entrypoint(search_id: str, username: str = Depends(require_auth)) -> AutoVacancySearchDetail:
+    def get_auto_vacancy_search_entrypoint(search_id: str, username: str = Depends(require_auth)) -> AutoVacancySearchDetail:
         """Load one saved auto vacancy search session with stored inputs and results."""
 
         response = funcs.create_search_id_response(search_id, username)
         return AutoVacancySearchDetail.model_validate(response)
 
     @api.get("/auto_vacancy_searches")
-    async def list_auto_vacancy_search_projects_entrypoint(username: str = Depends(require_auth)):
+    def list_auto_vacancy_search_projects_entrypoint(username: str = Depends(require_auth)):
         """List saved auto vacancy search sessions for the authenticated account."""
         return avdb.get_auto_vacancy_project_names(username)
 
 
     @api.post("/auto_vacancy_searches", status_code=201)
-    async def create_auto_vacancy_search_project_entrypoint(request: Request, username: str = Depends(require_auth)) -> dict[str, object]:
+    def create_auto_vacancy_search_project_entrypoint(payload: dict, username: str = Depends(require_auth)) -> dict[str, object]:
         """Create a named auto vacancy search session and return its first matched vacancies."""
         # убедится что projectname уникальный
-        payload = await request.json()
         return avdb.save_auto_vacancy_project_name(payload.get("name"), username)
 
     @api.post("/auto_vacancy_searches/{search_id}/more")
-    async def load_more_auto_vacancy_search_entrypoint(search_id: str, payload: AutoVacancyMoreRequest, username: str = Depends(require_auth)):
+    def load_more_auto_vacancy_search_entrypoint(search_id: str, payload: AutoVacancyMoreRequest, username: str = Depends(require_auth)):
         """Continue an existing auto vacancy search and append the next matched vacancy batch."""
         return funcs.load_more_auto_vacancies(search_id, username, payload.vacancy_limit)
 
     @api.post("/auto_vacancy_matches", response_model=AutoVacancyResponse, dependencies=[Depends(require_auth)])
-    async def auto_vacancy_matches(request = Depends(parse_autovacancy_form), username: str = Depends(require_auth)) -> AutoVacancyResponse:
+    def auto_vacancy_matches(request = Depends(parse_autovacancy_form), username: str = Depends(require_auth)) -> AutoVacancyResponse:
 
         request.resume = anp.clean_data_for_sensitive_n_safety(request.resume, sensitive=True)
         avdb.save_users_input(request, username, search_id = request.search_id)

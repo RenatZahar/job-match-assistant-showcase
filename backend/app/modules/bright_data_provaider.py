@@ -1,8 +1,12 @@
-import requests
 import time
 from typing import Literal
+
+import requests
 from pydantic import BaseModel, ConfigDict, Field
+
 from app.config import get_settings
+
+BRIGHT_DATA_SNAPSHOT_DEADLINE_SECONDS = 240
 
 
 class BrightDataModel(BaseModel):
@@ -88,14 +92,17 @@ def check_brightdata_snapshot(request, settings):
     if not snapshot_id:
         raise RuntimeError(f"Bright Data trigger response did not include snapshot_id: {data}")
 
-    while True:
+    deadline = time.monotonic() + BRIGHT_DATA_SNAPSHOT_DEADLINE_SECONDS
+    while time.monotonic() < deadline:
         time.sleep(2)
         status = check_snapshot_status(snapshot_id, settings)
         if status == "ready":
             snapshot_data = get_snapshot(snapshot_id, settings)
             return snapshot_data
-        if status == "failed":
+        if status in {"failed", "canceled", "cancelled"}:
             raise RuntimeError(f"Bright Data snapshot failed: snapshot_id={snapshot_id}")
+
+    raise RuntimeError(f"Bright Data snapshot timed out: snapshot_id={snapshot_id}")
 
 
 def send_search_requst(search_vacancy_settings, request, settings, old_vacs_in_project=None):
