@@ -15,7 +15,7 @@ from .test_data_storage import (
     replace_test_data_case,
 )
 
-from .modules import bright_data_provaider as bdp
+from .modules import bright_data_provider as bdp
 from .modules import anonymizer_n_privacy as anp
 from .modules import open_ai_provaider as oaip
 from .modules.db import auto_vacancy_db as avdb

@@ -1,7 +1,7 @@
 import pytest
 from pydantic import ValidationError
 
-from app.modules.bright_data_provaider import BrightDataModel
+from app.modules.bright_data_provider import BrightDataModel
 from app.modules.masks import BRIGHT_DATA_LLM_VALIDATION_INSTRUCTION
 
 

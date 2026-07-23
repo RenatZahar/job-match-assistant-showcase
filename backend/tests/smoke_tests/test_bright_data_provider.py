@@ -2,7 +2,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from app.modules import bright_data_provaider as bdp
+from app.modules import bright_data_provider as bdp
 
 
 class TriggerResponse:

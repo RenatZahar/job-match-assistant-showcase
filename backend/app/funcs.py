@@ -12,7 +12,7 @@ from starlette.concurrency import run_in_threadpool
 from .modules.masks import CV_EVALUATION_PROMT_TEMPLATE
 from .modules import anonymizer_n_privacy as anp
 from .modules import open_ai_provaider as oaip
-from .modules import bright_data_provaider as bdp
+from .modules import bright_data_provider as bdp
 from .modules.db import auto_vacancy_db as avdb
 from app.config import get_settings
 

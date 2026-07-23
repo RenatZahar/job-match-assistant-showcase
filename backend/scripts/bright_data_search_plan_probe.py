@@ -28,7 +28,7 @@ if str(BACKEND_ROOT) not in sys.path:
     sys.path.insert(0, str(BACKEND_ROOT))
 
 from app.config import get_settings  # noqa: E402
-from app.modules.bright_data_provaider import BrightDataModel  # noqa: E402
+from app.modules.bright_data_provider import BrightDataModel  # noqa: E402
 
 
 def utc_now_iso() -> str:
