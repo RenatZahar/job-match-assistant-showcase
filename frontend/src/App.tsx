@@ -2912,7 +2912,7 @@ function RedFlagList({ items }: { items: RedFlagItem[] }) {
 function ScoreBreakdownView({ breakdown }: { breakdown: ScoreBreakdown }) {
   const items = [
     ["Base", breakdown.base_match_score],
-    ["Red flags", breakdown.red_flags_modifier],
+    ["Штрафы", breakdown.red_flags_modifier],
     ["Freshness", breakdown.freshness_modifier],
     ["Final", breakdown.final_score],
   ];

@@ -260,6 +260,7 @@ describe("App auto vacancy search projects", () => {
     ).toBeInstanceOf(HTMLElement);
     expect(container.textContent).toContain("Детали вакансии");
     expect(container.textContent).toContain("Score breakdown");
+    expect(container.textContent).toContain("Штрафы");
     expect(container.textContent).toContain("84 / apply");
 
     await clickButton(container, "Открыть детали Python Backend Engineer");
